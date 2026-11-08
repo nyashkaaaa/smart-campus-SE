@@ -2,12 +2,14 @@
 // Times are represented as integer minutes after midnight (0 <= t <= 1440).
 
 export interface ExistingBooking {
+  /** Unique id, used as a stable React key */
+  readonly id: string;
   /** Minutes after midnight */
-  start: number;
+  readonly start: number;
   /** Minutes after midnight */
-  end: number;
+  readonly end: number;
   /** Label shown to the user */
-  label: string;
+  readonly label: string;
 }
 
 export type AvailabilityOutcome =
@@ -19,7 +21,7 @@ export interface AvailabilityInput {
   end: number;
   now: number;
   blocked: boolean;
-  existing: ExistingBooking[];
+  existing: readonly ExistingBooking[];
 }
 
 export const MAX_DURATION_MINUTES = 120;
@@ -70,7 +72,7 @@ export function canBook(input: AvailabilityInput): AvailabilityOutcome {
   if (duration > MAX_DURATION_MINUTES) {
     return {
       available: false,
-      reason: `The requested duration is ${duration} minutes. The maximum allowed is 120 minutes.`,
+      reason: `The requested duration is ${duration} minutes. The maximum allowed is ${MAX_DURATION_MINUTES} minutes.`,
     };
   }
 
