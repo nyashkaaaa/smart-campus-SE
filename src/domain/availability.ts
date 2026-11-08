@@ -1,5 +1,5 @@
-// Availability logic, kept separate from the UI.
-// Times are represented as integer minutes after midnight (0 <= t <= 1440).
+// Availability rules (AC1–AC4). Pure TypeScript, no React.
+import { MINUTES_PER_DAY, minutesToLabel } from "@/domain/time";
 
 export interface ExistingBooking {
   /** Unique id, used as a stable React key */
@@ -26,19 +26,6 @@ export interface AvailabilityInput {
 
 export const MAX_DURATION_MINUTES = 120;
 
-export function minutesToLabel(min: number): string {
-  const m = Math.min(Math.max(min, 0), 1440);
-  const h = Math.floor(m / 60);
-  const mm = m % 60;
-  return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
-}
-
-export function labelToMinutes(label: string): number | null {
-  const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(label.trim());
-  if (!match) return null;
-  return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
-}
-
 // Pure validation function. Returns either Available or Unavailable with a reason.
 // Does NOT mutate existing bookings and never creates a booking.
 export function canBook(input: AvailabilityInput): AvailabilityOutcome {
@@ -51,7 +38,7 @@ export function canBook(input: AvailabilityInput): AvailabilityOutcome {
     };
   }
 
-  if (!(0 <= start && start < end && end <= 1440)) {
+  if (!(0 <= start && start < end && end <= MINUTES_PER_DAY)) {
     return {
       available: false,
       reason:

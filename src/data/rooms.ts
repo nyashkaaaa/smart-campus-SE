@@ -1,5 +1,5 @@
 // Fictional demo data. No database or API: this file is the single source of truth.
-import type { Room } from "@/rooms";
+import type { Room } from "@/domain/rooms";
 
 /** Current time, fixed at 10:00 for predictable demonstration/testing. */
 export const NOW = 600;
